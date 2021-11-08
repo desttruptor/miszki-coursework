@@ -39,7 +39,7 @@ public class Menu {
                 "1. Проверка подключения к интернету.\n" +
                 "2. Проверка наличия межсетевого экрана.\n" +
                 "3. Проверка работоспособности межсетевого экрана.\n" +
-                "Проверка антивирусного ПО.\n" +
+                "Проверка антивирусного ПО:\n" +
                 "4. Проверка наличия установленного антивируса.\n" +
                 "5. Проверка работоспособности антивирусного ПО.\n" +
                 "6. Выход.\n";
@@ -85,8 +85,14 @@ public class Menu {
                     this::executeMenu,
                     reportWriter
             );
-            case 2 -> new CheckFirewallUseCase();
-            case 3 -> new CheckIfFirewallWorkingUseCase();
+            case 2 -> new CheckFirewallUseCase(
+                    this::executeMenu,
+                    reportWriter
+            );
+            case 3 -> new CheckIfFirewallWorkingUseCase(
+                    this::executeMenu,
+                    reportWriter
+            );
             case 4 -> new CheckIfWinDefenderExistsUseCase();
             case 5 -> new CheckIfWinDefenderWorkingUseCase();
             case 6 -> System.exit(0);

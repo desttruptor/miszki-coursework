@@ -24,7 +24,10 @@ public class CheckForInternetConnectionUseCase {
     private final ReportWriter reportWriter;
 
     /**
+     * Конструктор для операции "проверка подключения к интернету"
+     *
      * @param taskCompletedCallback коллбек на показ меню после выполнения операции
+     * @param reportWriter записывает отчет о выполнении проверки в файл
      */
     public CheckForInternetConnectionUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
         this.taskCompletedCallback = taskCompletedCallback;
@@ -32,9 +35,6 @@ public class CheckForInternetConnectionUseCase {
         driverMethod();
     }
 
-    /**
-     * Вызывает
-     */
     private void driverMethod() {
         String cmdResponse = checkConnection();
         boolean isConnected = isConnected(cmdResponse);
@@ -45,7 +45,7 @@ public class CheckForInternetConnectionUseCase {
     /**
      * Выполняет ping 8.8.8.8 средствами Windows
      *
-     * @return возврат консоли Windows по запросу
+     * @return возврат консоли Windows
      */
     private String checkConnection() {
         System.out.println("Выполняю проверку...");
@@ -102,7 +102,7 @@ public class CheckForInternetConnectionUseCase {
             System.out.println("ПК не подключен к интернету.\n");
         }
         String sb =
-                "Отчет об операции \"Проверка подключения к интернету\":" +
+                "Отчет об операции \"Проверка подключения к интернету\": " +
                 "Подключение ПК к интернету: " + isConnected + "\n" +
                 "Подробный отчет: " + cmdResponse + "\n";
         reportWriter.addToReport(sb);
