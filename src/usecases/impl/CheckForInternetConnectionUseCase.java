@@ -1,6 +1,8 @@
-package usecases;
+package usecases.impl;
 
 import report.ReportWriter;
+import usecases.BaseUseCase;
+import usecases.TaskCompletedCallback;
 import utils.ConsoleCommands;
 
 import java.io.BufferedReader;
@@ -11,17 +13,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * Операция "проверка подключения к интернету"
  */
-public class CheckForInternetConnectionUseCase {
-
-    /**
-     * Коллбек на показ меню после выполнения операции
-     */
-    private final TaskCompletedCallback taskCompletedCallback;
-
-    /**
-     * Класс для записи отчета о проверках
-     */
-    private final ReportWriter reportWriter;
+public class CheckForInternetConnectionUseCase extends BaseUseCase {
 
     /**
      * Конструктор для операции "проверка подключения к интернету"
@@ -30,8 +22,7 @@ public class CheckForInternetConnectionUseCase {
      * @param reportWriter записывает отчет о выполнении проверки в файл
      */
     public CheckForInternetConnectionUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
-        this.taskCompletedCallback = taskCompletedCallback;
-        this.reportWriter = reportWriter;
+        super(taskCompletedCallback, reportWriter);
         driverMethod();
     }
 
@@ -45,7 +36,7 @@ public class CheckForInternetConnectionUseCase {
     /**
      * Выполняет ping 8.8.8.8 средствами Windows
      *
-     * @return возврат консоли Windows
+     * @return возврат командной строки Windows
      */
     private String checkConnection() {
         System.out.println("Выполняю проверку...");
@@ -102,16 +93,9 @@ public class CheckForInternetConnectionUseCase {
             System.out.println("ПК не подключен к интернету.\n");
         }
         String sb =
-                "Отчет об операции \"Проверка подключения к интернету\": " +
+                "Отчет об операции \"Проверка подключения к интернету\": \n" +
                 "Подключение ПК к интернету: " + isConnected + "\n" +
                 "Подробный отчет: " + cmdResponse + "\n";
         reportWriter.addToReport(sb);
-    }
-
-    /**
-     * Показать меню по завершении работы
-     */
-    private void notifyTaskCompleted() {
-        taskCompletedCallback.onCompleteTask();
     }
 }

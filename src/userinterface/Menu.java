@@ -1,7 +1,7 @@
 package userinterface;
 
 import report.ReportWriter;
-import usecases.*;
+import usecases.impl.*;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -93,8 +93,14 @@ public class Menu {
                     this::executeMenu,
                     reportWriter
             );
-            case 4 -> new CheckIfWinDefenderExistsUseCase();
-            case 5 -> new CheckIfWinDefenderWorkingUseCase();
+            case 4 -> new CheckIfWinDefenderExistsUseCase(
+                    this::executeMenu,
+                    reportWriter
+            );
+            case 5 -> new CheckIfWinDefenderWorkingUseCase(
+                    this::executeMenu,
+                    reportWriter
+            );
             case 6 -> System.exit(0);
         }
     }

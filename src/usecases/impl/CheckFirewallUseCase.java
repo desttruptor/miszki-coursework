@@ -1,6 +1,8 @@
-package usecases;
+package usecases.impl;
 
 import report.ReportWriter;
+import usecases.BaseUseCase;
+import usecases.TaskCompletedCallback;
 import utils.ConsoleCommands;
 
 import java.io.BufferedReader;
@@ -11,25 +13,16 @@ import java.io.UnsupportedEncodingException;
 /**
  * Операция "проверка наличия межсетевого экрана"
  */
-public class CheckFirewallUseCase {
-    /**
-     * Коллбек на показ меню после выполнения операции
-     */
-    private final TaskCompletedCallback taskCompletedCallback;
-
-    /**
-     * Класс для записи отчета о проверках
-     */
-    private final ReportWriter reportWriter;
+public class CheckFirewallUseCase extends BaseUseCase {
 
     /**
      * Конструктор для операции "проверка наличия межсетевого экрана"
+     *
      * @param taskCompletedCallback коллбек на показ меню после выполнения операции
-     *      * @param reportWriter записывает отчет о выполнении проверки в файл
+     *                              * @param reportWriter записывает отчет о выполнении проверки в файл
      */
     public CheckFirewallUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
-        this.taskCompletedCallback = taskCompletedCallback;
-        this.reportWriter = reportWriter;
+        super(taskCompletedCallback, reportWriter);
         driverMethod();
     }
 
@@ -43,7 +36,7 @@ public class CheckFirewallUseCase {
     /**
      * Проверка статуса файрволла Windows
      *
-     * @return возврат консоли Windows
+     * @return возврат командной строки Windows
      */
     private String checkFirewallStatus() {
         System.out.println("Выполняю проверку...");
@@ -101,16 +94,9 @@ public class CheckFirewallUseCase {
             System.out.println("Межсетевой экран не активен.\n");
         }
         String sb =
-                "Отчет об операции \"Проверка наличия межсетевого экрана\": " +
+                "Отчет об операции \"Проверка наличия межсетевого экрана\": \n" +
                         "Межсетевой экран включен: " + isConnected + "\n" +
                         "Подробный отчет: " + cmdResponse + "\n";
         reportWriter.addToReport(sb);
-    }
-
-    /**
-     * Показать меню по завершении работы
-     */
-    private void notifyTaskCompleted() {
-        taskCompletedCallback.onCompleteTask();
     }
 }

@@ -1,30 +1,20 @@
-package usecases;
+package usecases.impl;
 
 import report.ReportWriter;
-import utils.ConsoleCommands;
+import usecases.BaseUseCase;
+import usecases.TaskCompletedCallback;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
  * Операция "проверка работоспособности межсетевого экрана"
  */
-public class CheckIfFirewallWorkingUseCase {
-    /**
-     * Коллбек на показ меню после выполнения операции
-     */
-    private final TaskCompletedCallback taskCompletedCallback;
-
-    /**
-     * Класс для записи отчета о проверках
-     */
-    private final ReportWriter reportWriter;
+public class CheckIfFirewallWorkingUseCase extends BaseUseCase {
 
     /**
      * Конструктор для операции "проверка наличия межсетевого экрана"
@@ -33,8 +23,7 @@ public class CheckIfFirewallWorkingUseCase {
      * @param reportWriter          записывает отчет о выполнении проверки в файл
      */
     public CheckIfFirewallWorkingUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
-        this.taskCompletedCallback = taskCompletedCallback;
-        this.reportWriter = reportWriter;
+        super(taskCompletedCallback, reportWriter);
         driverMethod();
     }
 
@@ -91,7 +80,7 @@ public class CheckIfFirewallWorkingUseCase {
             }
             responceBody.append(s);
         }
-        return "Код ответа сервера: " + responseCode + "\n"+
+        return "Код ответа сервера: " + responseCode + "\n" +
                 "Тело ответа сервера: " + responceBody + "\n";
     }
 
@@ -109,7 +98,7 @@ public class CheckIfFirewallWorkingUseCase {
      * Запись результатов проверки в отчет
      *
      * @param networkResponse ответ сервера
-     * @param isEnabled признак правильной работы файрволла
+     * @param isEnabled       признак правильной работы файрволла
      **/
     private void makeReport(String networkResponse, boolean isEnabled) {
         if (isEnabled) {
@@ -118,16 +107,9 @@ public class CheckIfFirewallWorkingUseCase {
             System.out.println("Межсетевой экран функционирует неверно.\n");
         }
         String sb =
-                "Отчет об операции \"Проверка работы межсетевого экрана\": " +
+                "Отчет об операции \"Проверка работы межсетевого экрана\": \n" +
                         "Работает верно: " + isEnabled + "\n" +
                         networkResponse + "\n";
         reportWriter.addToReport(sb);
-    }
-
-    /**
-     * Показать меню по завершении работы
-     */
-    private void notifyTaskCompleted() {
-        taskCompletedCallback.onCompleteTask();
     }
 }
