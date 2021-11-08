@@ -25,7 +25,7 @@ public class Main {
 //        }
 //        System.out.println(out);
 
-        for (int i = 0; i<3; i++) {
+        for (int i = 0; i<2; i++) {
             System.out.print("\r" + i);
             Thread.sleep(1000);
         }
