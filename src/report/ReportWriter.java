@@ -4,12 +4,30 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Класс, который будет записывать отчет о проверках
+ * Класс для записи отчета о проверках в файл.
  */
 public class ReportWriter {
 
-    private static final String FILE_NAME = "Отчет о проверках";
+    private static final String FILE_NAME = "Отчет о проверках.txt";
 
+    private static ReportWriter instance;
+
+    private ReportWriter() {
+        createNewReportFile();
+    }
+
+    public static ReportWriter getInstance() {
+        if (instance == null) {
+            instance = new ReportWriter();
+        }
+        return instance;
+    }
+
+    /**
+     * Записывает сформированный юзкейсом отчет в файл
+     *
+     * @param report отчет о проверке
+     */
     public void addToReport(String report) {
         try (FileWriter fileWriter = new FileWriter(FILE_NAME, true)) {
             fileWriter.write("\n");
@@ -27,5 +45,4 @@ public class ReportWriter {
         } catch (IOException ignored) {
         }
     }
-
 }

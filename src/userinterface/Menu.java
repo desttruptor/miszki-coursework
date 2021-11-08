@@ -1,5 +1,6 @@
 package userinterface;
 
+import report.ReportWriter;
 import usecases.*;
 
 import java.util.NoSuchElementException;
@@ -9,9 +10,18 @@ import java.util.Scanner;
  * Обработка логики консольного меню
  */
 public class Menu {
+    /**
+     * Получает ввод пользователя
+     */
     private final Scanner scanner = new Scanner(System.in);
 
-    public Menu() {
+    /**
+     * Класс для записи отчета о проверках
+     */
+    private final ReportWriter reportWriter;
+
+    public Menu(ReportWriter reportWriter) {
+        this.reportWriter = reportWriter;
         executeMenu();
     }
 
@@ -31,7 +41,8 @@ public class Menu {
                 "3. Проверка работоспособности межсетевого экрана.\n" +
                 "Проверка антивирусного ПО.\n" +
                 "4. Проверка наличия установленного антивируса.\n" +
-                "5. Проверка работоспособности антивирусного ПО.\n";
+                "5. Проверка работоспособности антивирусного ПО.\n" +
+                "6. Выход.\n";
         System.out.println(menu);
     }
 
@@ -70,11 +81,15 @@ public class Menu {
      */
     private void executeSelected(int selected) {
         switch (selected) {
-            case 1 -> new CheckForInternetConnectionUseCase(this::executeMenu);
+            case 1 -> new CheckForInternetConnectionUseCase(
+                    this::executeMenu,
+                    reportWriter
+            );
             case 2 -> new CheckFirewallUseCase();
             case 3 -> new CheckIfFirewallWorkingUseCase();
             case 4 -> new CheckIfWinDefenderExistsUseCase();
             case 5 -> new CheckIfWinDefenderWorkingUseCase();
+            case 6 -> System.exit(0);
         }
     }
 
@@ -85,6 +100,6 @@ public class Menu {
      * @return {@code true} - соответствует, {@code false} - нет
      */
     private boolean isAvailable(int selection) {
-        return selection >= 1 && selection <= 5;
+        return selection >= 1 && selection <= 6;
     }
 }
