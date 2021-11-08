@@ -44,7 +44,7 @@ public class CheckIfWinDefenderWorkingUseCase extends BaseUseCase {
             ProcessBuilder pb = new ProcessBuilder(ConsoleCommands.TASKLIST);
             pb.redirectErrorStream(true);
             p = pb.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
             String line;
             while ((line = reader.readLine()) != null) {
                 out.append(line);
