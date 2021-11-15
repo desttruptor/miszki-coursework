@@ -19,10 +19,9 @@ public class CheckForInternetConnectionUseCase extends BaseUseCase {
      * Конструктор для операции "проверка подключения к интернету"
      *
      * @param taskCompletedCallback коллбек на показ меню после выполнения операции
-     * @param reportWriter записывает отчет о выполнении проверки в файл
      */
-    public CheckForInternetConnectionUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
-        super(taskCompletedCallback, reportWriter);
+    public CheckForInternetConnectionUseCase(TaskCompletedCallback taskCompletedCallback) {
+        super(taskCompletedCallback);
         driverMethod();
     }
 
@@ -96,6 +95,6 @@ public class CheckForInternetConnectionUseCase extends BaseUseCase {
                 "Отчет об операции \"Проверка подключения к интернету\": \n" +
                 "Подключение ПК к интернету: " + isConnected + "\n" +
                 "Подробный отчет: " + cmdResponse + "\n";
-        reportWriter.addToReport(sb);
+        ReportWriter.addToReport(sb);
     }
 }

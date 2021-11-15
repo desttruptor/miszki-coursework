@@ -12,23 +12,12 @@ public class ReportWriter {
 
     private static ReportWriter instance;
 
-    private ReportWriter() {
-        createNewReportFile();
-    }
-
-    public static ReportWriter getInstance() {
-        if (instance == null) {
-            instance = new ReportWriter();
-        }
-        return instance;
-    }
-
     /**
      * Записывает сформированный юзкейсом отчет в файл
      *
      * @param report отчет о проверке
      */
-    public void addToReport(String report) {
+    public static void addToReport(String report) {
         try (FileWriter fileWriter = new FileWriter(FILE_NAME, true)) {
             fileWriter.write("\n");
             fileWriter.write(report + "\n");
@@ -37,7 +26,10 @@ public class ReportWriter {
         }
     }
 
-    private void createNewReportFile() {
+    /**
+     * Создает новый отчет
+     */
+    public static void createNewReportFile() {
         try (FileWriter fileWriter = new FileWriter(FILE_NAME)) {
             fileWriter.write("Файл отчета о проверках.\n");
             fileWriter.write("Отчет о проверках будет заполнен в порядке их выполнения.\n");

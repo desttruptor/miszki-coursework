@@ -16,10 +16,9 @@ public class CheckIfWinDefenderWorkingUseCase extends BaseUseCase {
      * Конструктор для операции "проверка работоспособности антивирусного ПО"
      *
      * @param taskCompletedCallback коллбек на показ меню после выполнения операции
-     * @param reportWriter          записывает отчет о выполнении проверки в файл
      */
-    public CheckIfWinDefenderWorkingUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
-        super(taskCompletedCallback, reportWriter);
+    public CheckIfWinDefenderWorkingUseCase(TaskCompletedCallback taskCompletedCallback) {
+        super(taskCompletedCallback);
         driverMethod();
     }
 
@@ -84,6 +83,6 @@ public class CheckIfWinDefenderWorkingUseCase extends BaseUseCase {
                 "Отчет об операции \"Проверка работоспособности антивирусного ПО\": \n" +
                         "На ПК активен антивирус: " + isRunning + "\n" +
                         "Подробный отчет: " + cmdResponse + "\n";
-        reportWriter.addToReport(sb);
+        ReportWriter.addToReport(sb);
     }
 }

@@ -15,10 +15,9 @@ public class CheckIfWinDefenderExistsUseCase extends BaseUseCase {
     /**
      * Конструктор для операции "проверка наличия установленного антивируса"
      * @param taskCompletedCallback коллбек на показ меню после выполнения операции
-     * @param reportWriter записывает отчет о выполнении проверки в файл
      */
-    public CheckIfWinDefenderExistsUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
-        super(taskCompletedCallback, reportWriter);
+    public CheckIfWinDefenderExistsUseCase(TaskCompletedCallback taskCompletedCallback) {
+        super(taskCompletedCallback);
         driverMethod();
     }
 
@@ -69,6 +68,6 @@ public class CheckIfWinDefenderExistsUseCase extends BaseUseCase {
                 "Отчет об операции \"Проверка наличия установленного антивируса\": \n" +
                         "На ПК установлен антивирус: " + isEnabled + "\n" +
                         "Подробный отчет: " + cmdResponse + "\n";
-        reportWriter.addToReport(sb);
+        ReportWriter.addToReport(sb);
     }
 }

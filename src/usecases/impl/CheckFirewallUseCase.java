@@ -19,10 +19,9 @@ public class CheckFirewallUseCase extends BaseUseCase {
      * Конструктор для операции "проверка наличия межсетевого экрана"
      *
      * @param taskCompletedCallback коллбек на показ меню после выполнения операции
-     *                              * @param reportWriter записывает отчет о выполнении проверки в файл
      */
-    public CheckFirewallUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
-        super(taskCompletedCallback, reportWriter);
+    public CheckFirewallUseCase(TaskCompletedCallback taskCompletedCallback) {
+        super(taskCompletedCallback);
         driverMethod();
     }
 
@@ -97,6 +96,6 @@ public class CheckFirewallUseCase extends BaseUseCase {
                 "Отчет об операции \"Проверка наличия межсетевого экрана\": \n" +
                         "Межсетевой экран включен: " + isConnected + "\n" +
                         "Подробный отчет: " + cmdResponse + "\n";
-        reportWriter.addToReport(sb);
+        ReportWriter.addToReport(sb);
     }
 }
