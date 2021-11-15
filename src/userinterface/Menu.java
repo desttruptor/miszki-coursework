@@ -1,6 +1,5 @@
 package userinterface;
 
-import report.ReportWriter;
 import usecases.impl.*;
 
 import java.util.NoSuchElementException;
@@ -15,13 +14,7 @@ public class Menu {
      */
     private final Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Класс для записи отчета о проверках
-     */
-    private final ReportWriter reportWriter;
-
-    public Menu(ReportWriter reportWriter) {
-        this.reportWriter = reportWriter;
+    public Menu() {
         executeMenu();
     }
 
@@ -81,26 +74,11 @@ public class Menu {
      */
     private void executeSelected(int selected) {
         switch (selected) {
-            case 1 -> new CheckForInternetConnectionUseCase(
-                    this::executeMenu,
-                    reportWriter
-            );
-            case 2 -> new CheckFirewallUseCase(
-                    this::executeMenu,
-                    reportWriter
-            );
-            case 3 -> new CheckIfFirewallWorkingUseCase(
-                    this::executeMenu,
-                    reportWriter
-            );
-            case 4 -> new CheckIfWinDefenderExistsUseCase(
-                    this::executeMenu,
-                    reportWriter
-            );
-            case 5 -> new CheckIfWinDefenderWorkingUseCase(
-                    this::executeMenu,
-                    reportWriter
-            );
+            case 1 -> new CheckForInternetConnectionUseCase(this::executeMenu);
+            case 2 -> new CheckFirewallUseCase(this::executeMenu);
+            case 3 -> new CheckIfFirewallWorkingUseCase(this::executeMenu);
+            case 4 -> new CheckIfWinDefenderExistsUseCase(this::executeMenu);
+            case 5 -> new CheckIfWinDefenderWorkingUseCase(this::executeMenu);
             case 6 -> System.exit(0);
         }
     }

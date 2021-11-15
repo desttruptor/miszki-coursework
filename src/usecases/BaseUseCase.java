@@ -10,19 +10,12 @@ public abstract class BaseUseCase {
     protected final TaskCompletedCallback taskCompletedCallback;
 
     /**
-     * Класс для записи отчета о проверках
-     */
-    protected final ReportWriter reportWriter;
-
-    /**
      * Базовый конструктор для юзкейса
      *
      * @param taskCompletedCallback коллбек на показ меню после выполнения операции
-     * @param reportWriter          записывает отчет о выполнении проверки в файл
      */
-    public BaseUseCase(TaskCompletedCallback taskCompletedCallback, ReportWriter reportWriter) {
+    public BaseUseCase(TaskCompletedCallback taskCompletedCallback) {
         this.taskCompletedCallback = taskCompletedCallback;
-        this.reportWriter = reportWriter;
     }
 
     /**

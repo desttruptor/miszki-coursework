@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="miszki:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/miszki_jar</output-path>
+    <root id="archive" name="miszki.jar">
+      <element id="module-output" name="miszki" />
+    </root>
+  </artifact>
+</component>
