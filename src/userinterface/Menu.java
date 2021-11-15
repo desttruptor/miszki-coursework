@@ -1,6 +1,5 @@
 package userinterface;
 
-import report.ReportWriter;
 import usecases.impl.*;
 
 import java.util.NoSuchElementException;

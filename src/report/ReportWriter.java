@@ -10,8 +10,6 @@ public class ReportWriter {
 
     private static final String FILE_NAME = "Отчет о проверках.txt";
 
-    private static ReportWriter instance;
-
     /**
      * Записывает сформированный юзкейсом отчет в файл
      *
