@@ -22,9 +22,10 @@ public class CheckForInternetConnectionUseCase extends BaseUseCase {
      */
     public CheckForInternetConnectionUseCase(TaskCompletedCallback taskCompletedCallback) {
         super(taskCompletedCallback);
+        driverMethod();
     }
 
-    public void use() {
+    private void driverMethod() {
         String cmdResponse = checkConnection();
         boolean isConnected = isConnected(cmdResponse);
         makeReport(cmdResponse, isConnected);
