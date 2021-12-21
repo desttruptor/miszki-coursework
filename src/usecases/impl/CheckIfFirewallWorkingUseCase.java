@@ -23,92 +23,75 @@ public class CheckIfFirewallWorkingUseCase extends BaseUseCase {
      */
     public CheckIfFirewallWorkingUseCase(TaskCompletedCallback taskCompletedCallback) {
         super(taskCompletedCallback);
-        driverMethod();
     }
 
-    private void driverMethod() {
-        String cmdResponse = null;
+    @Override
+    public void run() {
+        int cmdResponse = 0;
         try {
             cmdResponse = checkFirewallWork();
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        boolean isConnected = isEnabled(cmdResponse);
-        makeReport(cmdResponse, isConnected);
+        makeReport(isEnabled(cmdResponse));
         notifyTaskCompleted();
     }
 
     /**
      * Проверка статуса файрволла Windows
      *
-     * @return запрос на сервер и загрузка JSON
+     * @return код ответа сервера
      */
-    private String checkFirewallWork() throws IOException {
+    private int checkFirewallWork() throws IOException {
         System.out.println("Выполняю проверку...");
-
-        URL testUrl = null;
+        int responseCode = 0;
         try {
-            testUrl = new URL("https://jsonplaceholder.typicode.com/todos/1");
+            URL testUrl = new URL("https://jsonplaceholder.typicode.com/todos/1");
+            HttpsURLConnection conn = (HttpsURLConnection) testUrl.openConnection();
+            responseCode = conn.getResponseCode();
+            BufferedReader messageBody = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String s = messageBody.readLine();
+            @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
+            StringBuilder responseBody = new StringBuilder();
+            responseBody.append(s);
+            while (s != null) {
+                s = messageBody.readLine();
+                if (s == null) {
+                    break;
+                }
+                responseBody.append(s);
+            }
         } catch (MalformedURLException ignored) {
         }
 
-        HttpsURLConnection conn = null;
-        try {
-            conn = (HttpsURLConnection) testUrl.openConnection();
-        } catch (IOException ignored) {
-        }
-
-        int responseCode = 0;
-        try {
-            responseCode = conn.getResponseCode();
-        } catch (IOException ignored) {
-        }
-
-        BufferedReader messageBody = null;
-        try {
-            messageBody = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } catch (IOException ignored) {
-        }
-        StringBuilder responceBody = new StringBuilder();
-
-        String s = messageBody.readLine();
-        responceBody.append(s);
-        while (s != null) {
-            s = messageBody.readLine();
-            if (s == null) {
-                break;
-            }
-            responceBody.append(s);
-        }
-        return "Код ответа сервера: " + responseCode + "\n" +
-                "Тело ответа сервера: " + responceBody + "\n";
+        return responseCode;
     }
 
     /**
      * Проверка работы файрволла из ответа сервера
      *
-     * @param networkResponse ответ сервера
-     * @return {@code true} - файрволл активирован, {@code false} - отключен
+     * @param networkResponse код ответа сервера
+     * @return {@code true} - файрволл в порядке, {@code false} - не в порядке
      */
-    private boolean isEnabled(String networkResponse) {
-        return networkResponse.contains("Код ответа сервера: 200");
+    private boolean isEnabled(int networkResponse) {
+        return networkResponse == 200;
     }
 
     /**
      * Запись результатов проверки в отчет
      *
-     * @param networkResponse ответ сервера
-     * @param isEnabled       признак правильной работы файрволла
+     * @param isEnabled признак правильной работы файрволла
      **/
-    private void makeReport(String networkResponse, boolean isEnabled) {
+    private void makeReport(boolean isEnabled) {
+        String result;
         if (isEnabled) {
-            System.out.println("Межсетевой экран функционирует верно.\n");
+            result = "Межсетевой экран функционирует верно.\n";
         } else {
-            System.out.println("Межсетевой экран функционирует неверно.\n");
+            result = "Межсетевой экран функционирует неверно.\n";
         }
+        System.out.println(result);
         String sb =
-                "Отчет об операции \"Проверка работы межсетевого экрана\": \n" +
-                        "Работает верно: " + isEnabled + "\n" +
-                        networkResponse + "\n";
+                "Отчет об операции \"Проверка работы межсетевого экрана\": \n" + result;
         ReportWriter.addToReport(sb);
     }
 }

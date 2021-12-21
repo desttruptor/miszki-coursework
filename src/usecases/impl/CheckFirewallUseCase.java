@@ -8,7 +8,6 @@ import utils.ConsoleCommands;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Операция "проверка наличия межсетевого экрана"
@@ -22,13 +21,12 @@ public class CheckFirewallUseCase extends BaseUseCase {
      */
     public CheckFirewallUseCase(TaskCompletedCallback taskCompletedCallback) {
         super(taskCompletedCallback);
-        driverMethod();
     }
 
-    private void driverMethod() {
+    @Override
+    public void run() {
         String cmdResponse = checkFirewallStatus();
-        boolean isConnected = isEnabled(cmdResponse);
-        makeReport(cmdResponse, isConnected);
+        makeReport(isEnabled(cmdResponse));
         notifyTaskCompleted();
     }
 
@@ -41,29 +39,18 @@ public class CheckFirewallUseCase extends BaseUseCase {
         System.out.println("Выполняю проверку...");
         StringBuilder out = new StringBuilder();
         Runtime r = Runtime.getRuntime();
-        Process p = null;
-        try {
-            p = r.exec(ConsoleCommands.FIREWALL_STATE);
-        } catch (IOException e) {
-            System.out.println("Что-то пошло не так. Кажется, на вашей конфигурации данный запрос невозможен.");
-            notifyTaskCompleted();
-        }
-        try {
-            p.waitFor();
-        } catch (InterruptedException ignored) {
-        }
-
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
-        } catch (UnsupportedEncodingException ignored) {
-        }
         String line;
         try {
+            Process p = r.exec(ConsoleCommands.FIREWALL_STATE);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
             while ((line = reader.readLine()) != null) {
                 out.append(line).append("\n");
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            System.out.println("Что-то пошло не так.");
+            notifyTaskCompleted();
+        } catch (InterruptedException ignored) {
         }
 
         return out.toString();
@@ -83,19 +70,17 @@ public class CheckFirewallUseCase extends BaseUseCase {
     /**
      * Запись результатов проверки в отчет
      *
-     * @param cmdResponse ответ командной строки
      * @param isConnected признак включенного файрволла
      **/
-    private void makeReport(String cmdResponse, boolean isConnected) {
+    private void makeReport(boolean isConnected) {
+        String result;
         if (isConnected) {
-            System.out.println("Межсетевой экран активен.\n");
+            result = "Межсетевой экран активен.\n";
         } else {
-            System.out.println("Межсетевой экран не активен.\n");
+            result = "Межсетевой экран не активен.\n";
         }
-        String sb =
-                "Отчет об операции \"Проверка наличия межсетевого экрана\": \n" +
-                        "Межсетевой экран включен: " + isConnected + "\n" +
-                        "Подробный отчет: " + cmdResponse + "\n";
+        System.out.println(result);
+        String sb = "Отчет об операции \"Проверка наличия межсетевого экрана\": \n" + result;
         ReportWriter.addToReport(sb);
     }
 }

@@ -8,7 +8,6 @@ import utils.ConsoleCommands;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Операция "проверка подключения к интернету"
@@ -22,13 +21,12 @@ public class CheckForInternetConnectionUseCase extends BaseUseCase {
      */
     public CheckForInternetConnectionUseCase(TaskCompletedCallback taskCompletedCallback) {
         super(taskCompletedCallback);
-        driverMethod();
     }
 
-    private void driverMethod() {
+    @Override
+    public void run() {
         String cmdResponse = checkConnection();
-        boolean isConnected = isConnected(cmdResponse);
-        makeReport(cmdResponse, isConnected);
+        makeReport(isConnected(cmdResponse));
         notifyTaskCompleted();
     }
 
@@ -41,29 +39,18 @@ public class CheckForInternetConnectionUseCase extends BaseUseCase {
         System.out.println("Выполняю проверку...");
         StringBuilder out = new StringBuilder();
         Runtime r = Runtime.getRuntime();
-        Process p = null;
-        try {
-            p = r.exec(ConsoleCommands.PING_GOOGLE);
-        } catch (IOException e) {
-            System.out.println("Что-то пошло не так. Кажется, на вашей конфигурации данный запрос невозможен.");
-            notifyTaskCompleted();
-        }
-        try {
-            p.waitFor();
-        } catch (InterruptedException ignored) {
-        }
-
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
-        } catch (UnsupportedEncodingException ignored) {
-        }
         String line;
         try {
+            Process p = r.exec(ConsoleCommands.PING_GOOGLE);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
             while ((line = reader.readLine()) != null) {
                 out.append(line).append("\n");
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            System.out.println("Что-то пошло не так.");
+            notifyTaskCompleted();
+        } catch (InterruptedException ignored) {
         }
 
         return out.toString();
@@ -82,19 +69,18 @@ public class CheckForInternetConnectionUseCase extends BaseUseCase {
     /**
      * Запись результатов проверки в отчет
      *
-     * @param cmdResponse ответ команды ping
      * @param isConnected признак подключения к интернету
      **/
-    private void makeReport(String cmdResponse, boolean isConnected) {
+    private void makeReport(boolean isConnected) {
+        String result;
         if (isConnected) {
-            System.out.println("ПК подключен к интернету.\n");
+            result = "ПК подключен к интернету.\n";
         } else {
-            System.out.println("ПК не подключен к интернету.\n");
+            result = "ПК не подключен к интернету.\n";
         }
-        String sb =
-                "Отчет об операции \"Проверка подключения к интернету\": \n" +
-                "Подключение ПК к интернету: " + isConnected + "\n" +
-                "Подробный отчет: " + cmdResponse + "\n";
+        System.out.println(result);
+        String sb = "Отчет об операции \"Проверка подключения к интернету\": \n" + result;
         ReportWriter.addToReport(sb);
     }
+
 }
