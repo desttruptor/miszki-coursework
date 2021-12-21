@@ -1,7 +1,5 @@
 package usecases;
 
-import report.ReportWriter;
-
 public abstract class BaseUseCase {
 
     /**
@@ -17,6 +15,11 @@ public abstract class BaseUseCase {
     public BaseUseCase(TaskCompletedCallback taskCompletedCallback) {
         this.taskCompletedCallback = taskCompletedCallback;
     }
+
+    /**
+     * Метод для запуска последовательности действий, определенной в юзкейсе
+     */
+    public abstract void run();
 
     /**
      * Показать меню по завершении работы

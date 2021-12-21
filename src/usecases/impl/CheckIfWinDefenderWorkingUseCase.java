@@ -5,7 +5,9 @@ import usecases.BaseUseCase;
 import usecases.TaskCompletedCallback;
 import utils.ConsoleCommands;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Операция "проверка работоспособности антивирусного ПО"
@@ -19,13 +21,12 @@ public class CheckIfWinDefenderWorkingUseCase extends BaseUseCase {
      */
     public CheckIfWinDefenderWorkingUseCase(TaskCompletedCallback taskCompletedCallback) {
         super(taskCompletedCallback);
-        driverMethod();
     }
 
-    private void driverMethod() {
+    @Override
+    public void run() {
         String cmdResponse = checkDefenderStatus();
-        boolean isConnected = isRunning(cmdResponse);
-        makeReport(cmdResponse, isConnected);
+        makeReport(isRunning(cmdResponse));
         notifyTaskCompleted();
     }
 
@@ -38,11 +39,10 @@ public class CheckIfWinDefenderWorkingUseCase extends BaseUseCase {
         System.out.println("Выполняю проверку...");
 
         StringBuilder out = new StringBuilder();
-        Process p;
         try {
             ProcessBuilder pb = new ProcessBuilder(ConsoleCommands.TASKLIST);
             pb.redirectErrorStream(true);
-            p = pb.start();
+            Process p = pb.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), "cp866"));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -70,19 +70,17 @@ public class CheckIfWinDefenderWorkingUseCase extends BaseUseCase {
     /**
      * Запись результатов проверки в отчет
      *
-     * @param cmdResponse ответ командной строки
-     * @param isRunning   признак
+     * @param isRunning признак
      **/
-    private void makeReport(String cmdResponse, boolean isRunning) {
+    private void makeReport(boolean isRunning) {
+        String result;
         if (isRunning) {
-            System.out.println("Защитник Windows активен.\n");
+            result = "Защитник Windows активен.\n";
         } else {
-            System.out.println("Защитник Windows не активен.\n");
+            result = "Защитник Windows не активен.\n";
         }
-        String sb =
-                "Отчет об операции \"Проверка работоспособности антивирусного ПО\": \n" +
-                        "На ПК активен антивирус: " + isRunning + "\n" +
-                        "Подробный отчет: " + cmdResponse + "\n";
+        System.out.println(result);
+        String sb = "Отчет об операции \"Проверка работоспособности антивирусного ПО\": \n" + result;
         ReportWriter.addToReport(sb);
     }
 }

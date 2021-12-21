@@ -18,7 +18,7 @@ public class ReportWriter {
     public static void addToReport(String report) {
         try (FileWriter fileWriter = new FileWriter(FILE_NAME, true)) {
             fileWriter.write("\n");
-            fileWriter.write(report + "\n");
+            fileWriter.write(report);
             fileWriter.flush();
         } catch (IOException ignored) {
         }
