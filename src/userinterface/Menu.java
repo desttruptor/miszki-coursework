@@ -69,7 +69,7 @@ public class Menu {
         System.out.println("Введите цифру для запуска соответствующей ей проверки:");
         int selection = -1;
         while (isNotAvailable(selection)) {
-            if (isNotAvailable(selection)) {
+            if (!isNotAvailable(selection)) {
                 displayError();
             }
             try {
